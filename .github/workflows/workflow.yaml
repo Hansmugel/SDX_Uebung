@@ -43,5 +43,5 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
-          tags: ghcr.io/Plumbussy/SDXUE2:latest
+          tags: ghcr.io/Hansmugel/SDX_Uebung:latest
           push: false
