@@ -31,6 +31,9 @@ jobs:
     needs: lint
     name: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
@@ -52,4 +55,13 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           tags: ghcr.io/hansmugel/sdx_uebung:latest
-          push: true
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          push: false
