@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  recipe:
+    depends_on:
+      db:
+        condition: service_healthy
+    image: test:1.0
+    build:
+      context: .
+      dockerfile: dockerfile
+    environment:
+      - DB_HOST=db
+    ports:
+      - "127.0.0.1:8080:8080"
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
