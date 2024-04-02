@@ -66,6 +66,19 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
+      - name: Installation of Pypy
+        uses: actions/setup-python@v5 
+        with:
+          python-version: 'pypy3.9' 
+
+      - name: Installation of Python and run script
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' 
+      - run: | 
+          pip install requests
+          python api-test-example.py
+
       - name: Build and Push Docker image
         uses: docker/build-push-action@v2
         with:
