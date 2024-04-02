@@ -1,5 +1,6 @@
 import requests
 import json
+import sys
 
 # Die Basis-URL deines Servers (ersetze dies mit der tatsächlichen URL)
 base_url = "http://localhost:8080"
@@ -19,7 +20,7 @@ data = {
 
 # Konvertieren des Python-Dictionarys in einen JSON-String
 json_data = json.dumps(data)
-
+print(json_data)
 # Setzen der HTTP-Header für die Anfrage
 headers = {
     "Content-Type": "application/json"
@@ -32,5 +33,28 @@ response = requests.post(url, headers=headers, data=json_data)
 if response.status_code == 200:
     print("Erfolgreich gesendet!")
     print(response.json())  # Die Antwort des Servers anzeigen
+    sent = response.json()
 else:
     print(f"Fehler beim Senden der Anfrage. Status-Code: {response.status_code}, Antwort: {response.text}")
+    sys.exit(-1)
+
+response = requests.get(url)
+
+if response.status_code == 200:
+    print("Hier sind die derzeitig gespeicherten Rezepte:")
+    print(response.json())
+    received=response.json()
+else:
+    print('Fehler beim Abrufen der Daten. Statuscode:', response.status_code)
+    sys.exit(-1)
+
+print(sent)
+print(received)
+
+sent_ingredients = sent[0]["ingredients"]
+received_ingredients = received[0]["ingredients"]
+if sent_ingredients[3] == received_ingredients[3]:
+    print("Alles erfolgreich, senden und empfangen war perfekt!")
+else:
+    print("Irgendwas ist schief gegenagen?!")
+    sys.exit(-1)
