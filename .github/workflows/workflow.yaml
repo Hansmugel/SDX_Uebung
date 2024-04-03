@@ -2,7 +2,7 @@ name: Continuous Integration and Testing
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: 'ghcr.io/hansmugel/sdx_uebung:latest'
   IMAGE_TAG: latest
 
 on:
@@ -54,7 +54,7 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          tags: 'ghcr.io/hansmugel/sdx_uebung:latest'
           push: true
 
   scan:
@@ -66,7 +66,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'image'
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          image-ref: 'ghcr.io/hansmugel/sdx_uebung:latest'
           severity: 'CRITICAL,HIGH'
           fail-on-critical: true
 
