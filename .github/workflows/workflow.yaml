@@ -90,24 +90,31 @@ jobs:
         
   test:
     needs: scan
-    name: Test Application
+    name: Start and Test Application
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker environment
-        uses: docker/setup-buildx-action@v1
+      - name: Start Application
+        run: docker-compose up -d
 
-      - name: Start Application and Database
+      - name: Installation of PyPy
+        uses: actions/setup-python@v5
+        with:
+          python-version: 'pypy-3.9'
+
+      - name: Install Dependencies with PyPy
         run: |
-          # Start your application with docker-compose or any other way you prefer
-          docker-compose up -d
+          pip install requests
+          # Any additional setup steps or preliminary tests that run faster under PyPy could be executed here.
 
-      - name: Wait for Application to be ready
-        run: sleep 30 # Adjust this sleep time based on your application startup time
+      - name: Switch to Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-      - name: Run Tests
+      - name: Install Dependencies and Run Test Script with Python 3.10
         run: |
-          # Run your testing script here. It could be a shell script, a Python script, or any testing framework commands.
-          python testerony.py # Assuming you have a python script for testing
+          pip install requests
+          python testerony.py
