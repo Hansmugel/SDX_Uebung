@@ -108,6 +108,6 @@ jobs:
         run: |
           pip install requests
           python testerony.py
-        working-directory: ${{ github.workspace }}/SDX_Uebung
+        working-directory: ${{ github.workspace }}
 
 
