@@ -1,8 +1,9 @@
-name: Continuous Integration
+name: Continuous Integration and Testing
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/${{ github.event.repository.name | lower }}
+  IMAGE_TAG: latest
 
 on:
   push:
@@ -14,33 +15,37 @@ on:
 
 jobs:
   lint:
-    name: Lint Go
+    name: Lint Code and Dockerfile
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install go
+      - name: Set up Go
         uses: actions/setup-go@v3
         with:
           go-version: '1.22'
 
-      - name: golangci-lint
+      - name: Lint Go code
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.54
-          working-directory: ./src
+          version: latest
 
-  build_push:
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v1.6.0
+        with:
+          dockerfile: ./Dockerfile
+
+  build:
     needs: lint
-    name: Build and Push
+    name: Build Docker Image
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
       - name: Log in to the Container registry
         uses: docker/login-action@v1
@@ -48,42 +53,52 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-          
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'image'
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
 
-      - name: Build and Push Docker image
+      - name: Update Go dependencies
+        run: go get -u ./...
+
+      - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
-          load: true # This needs to be true to use the built image in the same job.
           platforms: linux/amd64,linux/arm64
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           push: true
 
-      - name: Set up PyPy
-        uses: actions/setup-python@v3
+  scan:
+    needs: build
+    name: Scan Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
         with:
-          python-version: 'pypy-3.9'
+          scan-type: 'image'
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          severity: 'CRITICAL,HIGH'
+          fail-on-critical: true
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
-          
-      - name: Install dependencies and run Python script
+  test:
+    needs: scan
+    name: Test Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker environment
+        uses: docker/setup-buildx-action@v1
+
+      - name: Start Application and Database
         run: |
-          pip install requests
-          python testeroni.py
+          # Start your application with docker-compose or any other way you prefer
+          docker-compose up -d
+
+      - name: Wait for Application to be ready
+        run: sleep 30 # Adjust this sleep time based on your application startup time
+
+      - name: Run Tests
+        run: |
+          # Run your testing script here. It could be a shell script, a Python script, or any testing framework commands.
+          python test_script.py # Assuming you have a python script for testing
