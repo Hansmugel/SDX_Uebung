@@ -2,7 +2,7 @@ name: Continuous Integration and Testing
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/${{ github.event.repository.name | lower }}
+  IMAGE_NAME: ${{ github.repository }}
   IMAGE_TAG: latest
 
 on:
