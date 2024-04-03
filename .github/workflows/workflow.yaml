@@ -117,4 +117,4 @@ jobs:
       - name: Install Dependencies and Run Test Script with Python 3.10
         run: |
           pip install requests
-          python testerony.py
+          python SDX_Uebung/testerony.py
