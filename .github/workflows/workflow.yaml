@@ -102,19 +102,12 @@ jobs:
       - name: Installation of PyPy
         uses: actions/setup-python@v5
         with:
-          python-version: 'pypy-3.9'
-
-      - name: Install Dependencies with PyPy
-        run: |
-          pip install requests
-          # Any additional setup steps or preliminary tests that run faster under PyPy could be executed here.
-
-      - name: Switch to Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+          python-version: 'pypy-3.10'
 
       - name: Install Dependencies and Run Test Script with Python 3.10
         run: |
           pip install requests
-          python SDX_Uebung/testerony.py
+          python testerony.py
+        working-directory: ${{ github.workspace }}/SDX_Uebung
+
+
