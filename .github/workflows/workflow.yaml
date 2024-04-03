@@ -110,4 +110,4 @@ jobs:
       - name: Run Tests
         run: |
           # Run your testing script here. It could be a shell script, a Python script, or any testing framework commands.
-          python test_script.py # Assuming you have a python script for testing
+          python testerony.py # Assuming you have a python script for testing
