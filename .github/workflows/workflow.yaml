@@ -106,9 +106,6 @@ jobs:
 
       - name: List files in the root
         run: ls -la
-
-      - name: List files in the SDX_Uebung directory
-        run: ls -la SDX_Uebung/
         
       - name: Install Dependencies and Run Test Script with Python 3.10
         uses: actions/setup-python@v5
