@@ -28,7 +28,7 @@ jobs:
 
       - uses: hadolint/hadolint-action@v1.6.0
         with:
-          dockerfile: ./Dockerfile
+          dockerfile: Dockerfile
   
   lint:
     name: Lint Go
