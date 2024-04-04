@@ -36,8 +36,8 @@ jobs:
         with:
           dockerfile: dockerfile
 
-  lint:
-    name: Lint Go
+  lint-source:
+    name: Lint Source
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -62,7 +62,7 @@ jobs:
 
   # BUILD
   build:
-    needs: lint
+    needs: lint-source
     name: Build Docker Image
     runs-on: ubuntu-latest
     permissions:
@@ -87,11 +87,11 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./Dockerfile
-          platforms: linux/amd64
+          file: dockerfile
+          platforms: linux/amd64,linux/arm64
           tags: 'ghcr.io/hansmugel/sdx_uebung:latest'
-          load: true
-          push: true
+          # load: true
+          # push: true
 
   # SCAN IMAGE
   scan:
