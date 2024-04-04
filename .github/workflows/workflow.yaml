@@ -48,7 +48,7 @@ jobs:
 
     - uses: hadolint/hadolint-action@v1.6.0
       with:
-        dockerfile: ./Dockerfile
+        dockerfile: Dockerfile
   # BUILD
   build:
     needs: lint
