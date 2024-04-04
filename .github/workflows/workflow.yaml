@@ -19,11 +19,16 @@ on:
 # JOBS
 jobs:
   # LINTING
+
   lint-dockerfile:
     name: Lint Dockerfile
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: List directory contents
+      - run: ls -la
+      
       - uses: actions/checkout@v2
 
       - uses: hadolint/hadolint-action@v1.6.0
