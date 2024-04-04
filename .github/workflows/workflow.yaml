@@ -35,7 +35,8 @@ jobs:
           version: v1.54
           working-directory: src
       - name: Run golangci-lint
-        run: golangci-lint run ./src
+        run: golangci-lint run ./src/...
+        working-directory: ${{ github.workspace }}
 
   lint-dockerfile:
     name: Lint Dockerfile
