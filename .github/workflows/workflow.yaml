@@ -19,6 +19,17 @@ on:
 # JOBS
 jobs:
   # LINTING
+  lint-dockerfile:
+    name: Lint Dockerfile
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: hadolint/hadolint-action@v1.6.0
+        with:
+          dockerfile: ./Dockerfile
+  
   lint:
     name: Lint Go
     runs-on: ubuntu-latest
@@ -39,16 +50,7 @@ jobs:
           cd src
           golangci-lint run ./...
 
-  lint-dockerfile:
-    name: Lint Dockerfile
-    runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v2
-
-    - uses: hadolint/hadolint-action@v1.6.0
-      with:
-        dockerfile: Dockerfile
   # BUILD
   build:
     needs: lint
