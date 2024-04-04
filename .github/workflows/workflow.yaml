@@ -25,35 +25,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: List directory contents
-      - run: ls -la
-      
-      - uses: actions/checkout@v2
+        run: ls -la
 
-      - uses: hadolint/hadolint-action@v1.6.0
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v1.6.0
         with:
           dockerfile: Dockerfile
-  
+
   lint:
     name: Lint Go
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Install go
         uses: actions/setup-go@v3
         with:
           go-version: '1.22'
+
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.54
           working-directory: src
+
       - name: Run golangci-lint
-        run: |
-          cd src
-          golangci-lint run ./...
+        run: golangci-lint run ./src/...
 
 
   # BUILD
