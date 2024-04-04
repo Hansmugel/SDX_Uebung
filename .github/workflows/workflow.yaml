@@ -34,7 +34,7 @@ jobs:
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v1.6.0
         with:
-          dockerfile: Dockerfile
+          dockerfile: dockerfile
 
   lint:
     name: Lint Go
@@ -55,7 +55,9 @@ jobs:
           working-directory: src
 
       - name: Run golangci-lint
-        run: golangci-lint run ./src/...
+        run: |
+          cd src
+          golangci-lint run
 
 
   # BUILD
