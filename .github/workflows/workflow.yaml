@@ -37,6 +37,7 @@ jobs:
           dockerfile: dockerfile
 
   lint-source:
+    needs: lint-dockerfile
     name: Lint Source
     runs-on: ubuntu-latest
     steps:
