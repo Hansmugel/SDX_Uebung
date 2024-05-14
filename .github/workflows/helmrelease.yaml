@@ -38,12 +38,12 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.0
         with:
-          charts_dir: charts
+          charts_dir: charts/recipe/charts
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Debug Chart Changes
         run: |
-          echo "Listing changed files in 'charts' directory:"
-          git diff --name-only HEAD~1 HEAD -- charts/
+          echo "Listing changed files in 'charts/recipe/charts' directory:"
+          git diff --name-only HEAD~1 HEAD -- charts/recipe/charts/
           echo "End of changed files."
