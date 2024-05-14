@@ -28,13 +28,22 @@ jobs:
         with:
           version: v3.8.1
 
+      - name: Print Latest Tag
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0)
+          echo "Latest tag: $latest_tag"
+          echo "Changes since the latest tag:"
+          git diff $latest_tag HEAD --name-only
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.0
+        with:
+          charts_dir: charts
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Debug Chart Changes
         run: |
-          echo "Listing changed files:"
-          git diff --name-only HEAD~1 HEAD
+          echo "Listing changed files in 'charts' directory:"
+          git diff --name-only HEAD~1 HEAD -- charts/
           echo "End of changed files."
